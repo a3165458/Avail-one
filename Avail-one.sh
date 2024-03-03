@@ -147,3 +147,6 @@ function main_menu() {
     *) echo "无效选项。" ;;
     esac
 }
+
+# 显示主菜单
+main_menu
