@@ -107,10 +107,12 @@ sudo systemctl daemon-reload
 sudo systemctl enable availd
 sudo systemctl start availd.service
 
-}
-
 # 完成安装提示
 echo ====================================== 安装完成 =========================================
+
+}
+
+
 
 
 # 查看Avail服务状态
@@ -130,6 +132,7 @@ function check_wallet() {
 
 # 主菜单
 function main_menu() {
+    clear
     echo "脚本以及教程由推特用户@y95277777 编写，免费开源，请勿相信收费"
     echo "================================================================"
     echo "节点社区 Telegram 群组:https://t.me/niuwuriji"
