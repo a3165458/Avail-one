@@ -114,7 +114,6 @@ echo ====================================== 安装完成 =======================
 
 
 
-
 # 查看Avail服务状态
 function check_service_status() {
     systemctl status availd
