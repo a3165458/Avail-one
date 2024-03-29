@@ -138,7 +138,6 @@ function check_wallet() {
 
 # 主菜单
 function main_menu() {
-    while true; do
     clear
     echo "脚本以及教程由推特用户大赌哥 @y95277777 编写，免费开源，请勿相信收费"
     echo "================================================================"
@@ -159,9 +158,7 @@ function main_menu() {
     4) check_wallet ;;
     5) check_and_set_alias ;;  
     *) echo "无效选项。" ;;
-    echo "按任意键返回主菜单..."
-    read -n 1
-done
+    esac
 }
 
 # 显示主菜单
