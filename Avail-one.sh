@@ -138,27 +138,31 @@ function check_wallet() {
 
 # 主菜单
 function main_menu() {
-    clear
-    echo "脚本以及教程由推特用户大赌哥 @y95277777 编写，免费开源，请勿相信收费"
-    echo "================================================================"
-    echo "节点社区 Telegram 群组:https://t.me/niuwuriji"
-    echo "节点社区 Telegram 频道:https://t.me/niuwuriji"
-    echo "请选择要执行的操作:"
-    echo "1. 安装节点"
-    echo "2. 查看Avail服务状态"
-    echo "3. 节点日志查询"
-    echo "4. 查询节点匹配的钱包地址"
-    echo "5. 设置快捷键的功能"
-    read -p "请输入选项（1-5）: " OPTION
+    while true; do
+        clear
+        echo "脚本以及教程由推特用户大赌哥 @y95277777 编写，免费开源，请勿相信收费"
+        echo "================================================================"
+        echo "节点社区 Telegram 群组:https://t.me/niuwuriji"
+        echo "节点社区 Telegram 频道:https://t.me/niuwuriji"
+        echo "退出脚本，请按键盘ctrl c退出即可"
+        echo "请选择要执行的操作:"
+        echo "1. 安装节点"
+        echo "2. 查看Avail服务状态"
+        echo "3. 节点日志查询"
+        echo "4. 查询节点匹配的钱包地址"
+        echo "5. 设置快捷键的功能"
+        read -p "请输入选项（1-6）: " OPTION
 
-    case $OPTION in
-    1) install_node ;;
-    2) check_service_status ;;
-    3) view_logs ;;
-    4) check_wallet ;;
-    5) check_and_set_alias ;;  
-    *) echo "无效选项。" ;;
-    esac
+        case $OPTION in
+        1) install_node ;;
+        2) check_service_status ;;
+        3) view_logs ;;
+        4) check_wallet ;;
+        5) check_and_set_alias ;;
+        *) echo "无效选项，请重新输入。" ;;
+        esac
+        read -p "按任意键返回菜单..." 
+    done
 }
 
 # 显示主菜单
