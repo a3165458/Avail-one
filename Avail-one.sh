@@ -164,7 +164,7 @@ function main_menu() {
         3) view_logs ;;
         4) check_wallet ;;
         5) check_and_set_alias ;;
-        6）uninstall_node ;;
+        6) uninstall_node ;;
         *) echo "无效选项，请重新输入。" ;;
         esac
         read -p "按任意键返回菜单..." 
