@@ -96,7 +96,7 @@ cat > identity.toml <<EOF
 avail_secret_seed_phrase = "$SECRET_SEED_PHRASE"
 EOF
 
-pm2 start ./avail-light --name availd -- --network goldberg --identity ./identity.toml
+pm2 start ./avail-light --name availd -- --network goldberg --identity ./identity.toml --watch
 pm2 save
 pm2 startup
 
