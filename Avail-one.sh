@@ -111,8 +111,6 @@ install_dependencies() {
 dependencies=(curl make clang pkg-config libssl-dev build-essential)
 install_dependencies "${dependencies[@]}"
 
-# 安装pm2
-npm install pm2@latest -g
 
 # 设置安装目录和发布 URL
 INSTALL_DIR="${HOME}/avail-light"
