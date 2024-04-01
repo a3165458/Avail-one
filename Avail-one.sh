@@ -122,6 +122,24 @@ function check_wallet() {
     pm2 logs availd | grep address
 }
 
+function uninstall_node() {
+    echo "你确定要卸载Avail-light 节点程序吗？这将会删除所有相关的数据。[Y/N]"
+    read -r -p "请确认: " response
+
+    case "$response" in
+        [yY][eE][sS]|[yY]) 
+            echo "开始卸载节点程序..."
+            pm2 stop availd && pm2 delete availd
+            rm -rf $HOME/.avail-light $HOME/artela $(which avail-light)
+            echo "节点程序卸载完成。"
+            ;;
+        *)
+            echo "取消卸载操作。"
+            ;;
+    esac
+}
+
+
 # 主菜单
 function main_menu() {
     while true; do
@@ -137,6 +155,7 @@ function main_menu() {
         echo "3. 节点日志查询"
         echo "4. 查询节点匹配的钱包地址"
         echo "5. 设置快捷键的功能"
+        echo "6. 卸载节点"
         read -p "请输入选项（1-6）: " OPTION
 
         case $OPTION in
@@ -145,6 +164,7 @@ function main_menu() {
         3) view_logs ;;
         4) check_wallet ;;
         5) check_and_set_alias ;;
+        6）uninstall_node ;;
         *) echo "无效选项，请重新输入。" ;;
         esac
         read -p "按任意键返回菜单..." 
