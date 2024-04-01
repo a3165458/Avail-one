@@ -7,6 +7,39 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
+
+# 检查并安装 Node.js 和 npm
+function install_nodejs_and_npm() {
+    if ! command -v node > /dev/null 2>&1; then
+        echo "Node.js 未安装，正在安装..."
+        curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+        sudo apt-get install -y nodejs
+        echo "Node.js 安装完成。"
+    else
+        echo "Node.js 已安装。"
+    fi
+
+    if ! command -v npm > /dev/null 2>&1; then
+        echo "npm 未安装，正在安装..."
+        sudo apt-get install -y npm
+        echo "npm 安装完成。"
+    else
+        echo "npm 已安装。"
+    fi
+}
+
+# 检查并安装 PM2
+function install_pm2() {
+    if ! command -v pm2 > /dev/null 2>&1; then
+        echo "PM2 未安装，正在安装..."
+        npm install pm2@latest -g
+        echo "PM2 安装完成。"
+    else
+        echo "PM2 已安装。"
+    fi
+}
+
+
 # 脚本保存路径
 SCRIPT_PATH="$HOME/Avail-one.sh"
 
@@ -37,6 +70,10 @@ function check_and_set_alias() {
 
 # 节点安装功能
 function install_node() {
+
+install_nodejs_and_npm
+install_pm2
+
 
 # 函数：检查命令是否存在
 exists() {
@@ -96,9 +133,7 @@ cat > identity.toml <<EOF
 avail_secret_seed_phrase = "$SECRET_SEED_PHRASE"
 EOF
 
-pm2 start ./avail-light --name availd -- --network goldberg --identity ./identity.toml --watch
-pm2 save
-pm2 startup
+pm2 start ./avail-light --name availd -- --network goldberg --identity ./identity.toml 
 
 # 完成安装提示
 echo ====================================== 安装完成 =========================================
