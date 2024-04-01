@@ -74,6 +74,8 @@ install_dependencies() {
 dependencies=(curl make clang pkg-config libssl-dev build-essential)
 install_dependencies "${dependencies[@]}"
 
+# 安装pm2
+npm install pm2@latest -g
 
 # 设置安装目录和发布 URL
 INSTALL_DIR="${HOME}/avail-light"
@@ -94,25 +96,9 @@ cat > identity.toml <<EOF
 avail_secret_seed_phrase = "$SECRET_SEED_PHRASE"
 EOF
 
-# 配置 systemd 服务文件
-tee /etc/systemd/system/availd.service > /dev/null << EOF
-[Unit]
-Description=Avail Light Client
-After=network.target
-StartLimitIntervalSec=0
-[Service]
-User=root
-ExecStart=/root/avail-light/avail-light --network goldberg --identity /root/avail-light/identity.toml
-Restart=always
-RestartSec=120
-[Install]
-WantedBy=multi-user.target
-EOF
-
-# 重新加载 systemd 并启用并启动服务
-sudo systemctl daemon-reload
-sudo systemctl enable availd
-sudo systemctl start availd.service
+pm2 start ./avail-light --name availd -- --network goldberg --identity ./identity.toml
+pm2 save
+pm2 startup
 
 # 完成安装提示
 echo ====================================== 安装完成 =========================================
@@ -123,17 +109,17 @@ echo ====================================== 安装完成 =======================
 
 # 查看Avail服务状态
 function check_service_status() {
-    systemctl status availd
+    pm2 list
 }
 
 # Avail 节点日志查询
 function view_logs() {
-    sudo journalctl -f -u availd.service 
+    pm2 logs availd
 }
 
 # 查询节点匹配的钱包地址（建议安装好后，就查询钱包地址，如果日志过长，该功能可能会失效）
 function check_wallet() {
-    journalctl -u availd | grep address
+    pm2 logs availd | grep address
 }
 
 # 主菜单
