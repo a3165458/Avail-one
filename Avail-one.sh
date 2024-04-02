@@ -163,7 +163,7 @@ function uninstall_node() {
         [yY][eE][sS]|[yY]) 
             echo "开始卸载节点程序..."
             pm2 stop availd && pm2 delete availd
-            rm -rf $HOME/.avail-light $HOME/artela $(which avail-light)
+            rm -rf $HOME/.avail-light $HOME/avail-light $(which avail-light)
             echo "节点程序卸载完成。"
             ;;
         *)
