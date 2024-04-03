@@ -149,7 +149,7 @@ function main_menu() {
         echo "1. 安装节点"
         echo "2. 查看Avail服务状态"
         echo "3. 节点日志查询"
-        echo "4. 查询节点匹配的钱包地址"
+        echo "4. 查询节点匹配的public key"
         echo "5. 设置快捷键的功能"
         read -p "请输入选项（1-6）: " OPTION
 
