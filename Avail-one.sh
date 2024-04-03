@@ -152,7 +152,7 @@ function view_logs() {
 
 # 查询节点匹配的钱包地址（建议安装好后，就查询钱包地址，如果日志过长，该功能可能会失效）
 function check_wallet() {
-    pm2 logs availd | grep address
+    pm2 logs availd --lines 1000 | grep "public key"
 }
 
 function uninstall_node() {
