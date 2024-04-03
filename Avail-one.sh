@@ -7,39 +7,6 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
-
-# 检查并安装 Node.js 和 npm
-function install_nodejs_and_npm() {
-    if ! command -v node > /dev/null 2>&1; then
-        echo "Node.js 未安装，正在安装..."
-        curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-        sudo apt-get install -y nodejs
-        echo "Node.js 安装完成。"
-    else
-        echo "Node.js 已安装。"
-    fi
-
-    if ! command -v npm > /dev/null 2>&1; then
-        echo "npm 未安装，正在安装..."
-        sudo apt-get install -y npm
-        echo "npm 安装完成。"
-    else
-        echo "npm 已安装。"
-    fi
-}
-
-# 检查并安装 PM2
-function install_pm2() {
-    if ! command -v pm2 > /dev/null 2>&1; then
-        echo "PM2 未安装，正在安装..."
-        npm install pm2@latest -g
-        echo "PM2 安装完成。"
-    else
-        echo "PM2 已安装。"
-    fi
-}
-
-
 # 脚本保存路径
 SCRIPT_PATH="$HOME/Avail-one.sh"
 
@@ -70,10 +37,6 @@ function check_and_set_alias() {
 
 # 节点安装功能
 function install_node() {
-
-install_nodejs_and_npm
-install_pm2
-
 
 # 函数：检查命令是否存在
 exists() {
@@ -131,7 +94,25 @@ cat > identity.toml <<EOF
 avail_secret_seed_phrase = "$SECRET_SEED_PHRASE"
 EOF
 
-pm2 start ./avail-light --name availd -- --network goldberg --identity ./identity.toml 
+# 配置 systemd 服务文件
+tee /etc/systemd/system/availd.service > /dev/null << EOF
+[Unit]
+Description=Avail Light Client
+After=network.target
+StartLimitIntervalSec=0
+[Service]
+User=root
+ExecStart=/root/avail-light/avail-light --network goldberg --identity /root/avail-light/identity.toml
+Restart=always
+RestartSec=120
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# 重新加载 systemd 并启用并启动服务
+sudo systemctl daemon-reload
+sudo systemctl enable availd
+sudo systemctl start availd.service
 
 # 完成安装提示
 echo ====================================== 安装完成 =========================================
@@ -142,36 +123,18 @@ echo ====================================== 安装完成 =======================
 
 # 查看Avail服务状态
 function check_service_status() {
-    pm2 list
+    systemctl status availd
 }
 
 # Avail 节点日志查询
 function view_logs() {
-    pm2 logs availd
+    sudo journalctl -f -u availd.service 
 }
 
-# 查询节点匹配的public key
+# 查询节点匹配的钱包地址（建议安装好后，就查询钱包地址，如果日志过长，该功能可能会失效）
 function check_wallet() {
-    pm2 logs availd --lines 1000 | grep "public key"
+    journalctl -u availd | grep public key
 }
-
-function uninstall_node() {
-    echo "你确定要卸载Avail-light 节点程序吗？这将会删除所有相关的数据。[Y/N]"
-    read -r -p "请确认: " response
-
-    case "$response" in
-        [yY][eE][sS]|[yY]) 
-            echo "开始卸载节点程序..."
-            pm2 stop availd && pm2 delete availd
-            rm -rf $HOME/.avail-light $HOME/avail-light $(which avail-light)
-            echo "节点程序卸载完成。"
-            ;;
-        *)
-            echo "取消卸载操作。"
-            ;;
-    esac
-}
-
 
 # 主菜单
 function main_menu() {
@@ -186,9 +149,8 @@ function main_menu() {
         echo "1. 安装节点"
         echo "2. 查看Avail服务状态"
         echo "3. 节点日志查询"
-        echo "4. 查询节点匹配的public key"
+        echo "4. 查询节点匹配的钱包地址"
         echo "5. 设置快捷键的功能"
-        echo "6. 卸载节点"
         read -p "请输入选项（1-6）: " OPTION
 
         case $OPTION in
@@ -197,7 +159,6 @@ function main_menu() {
         3) view_logs ;;
         4) check_wallet ;;
         5) check_and_set_alias ;;
-        6) uninstall_node ;;
         *) echo "无效选项，请重新输入。" ;;
         esac
         read -p "按任意键返回菜单..." 
