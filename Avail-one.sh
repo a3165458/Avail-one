@@ -131,7 +131,7 @@ function view_logs() {
     sudo journalctl -f -u availd.service 
 }
 
-# 查询节点匹配的钱包地址（建议安装好后，就查询钱包地址，如果日志过长，该功能可能会失效）
+# 查询节点匹配的公钥（建议安装好后，就查询钱包地址，如果日志过长，该功能可能会失效）
 function check_wallet() {
     journalctl -u availd | grep public key
 }
