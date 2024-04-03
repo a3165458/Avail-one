@@ -133,7 +133,7 @@ function view_logs() {
 
 # 查询节点匹配的公钥（建议安装好后，就查询钱包地址，如果日志过长，该功能可能会失效）
 function check_wallet() {
-    journalctl -u availd | grep public key
+    journalctl -u availd | grep "public key"
 }
 
 # 主菜单
